@@ -4,43 +4,63 @@ const todoList = document.getElementById("todo-list")
 const stats = document.getElementById("stats")
 const progress = document.getElementById("progress")
 const filterButtons = document.querySelectorAll(".filter-btn")
+const emptyState = document.getElementById("empty-state")
 
+const statTotal = document.getElementById("stat-total")
+const statActive = document.getElementById("stat-active")
+const statDone = document.getElementById("stat-done")
+
+const dateEl = document.getElementById("current-date")
+if (dateEl) {
+    const now = new Date()
+    dateEl.innerHTML = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric"
+    })
+}
 
 let todos = JSON.parse(localStorage.getItem("todos")) || []
 let currentFilter = "all"
 
-function saveTodo () {
+function saveTodo() {
     localStorage.setItem("todos", JSON.stringify(todos))
 }
 
 function updateStats() {
+    const completed = todos.filter(todo => todo.completed).length
+    const total = todos.length
 
-  const completed = todos.filter(todo => todo.completed).length
-  const total = todos.length
+    stats.textContent = `${completed} / ${total} completed`
 
-  stats.textContent = `${completed} / ${total} completed`
+    const percent = total === 0 ? 0 : (completed / total) * 100
+    progress.style.width = `${percent}%`
 
-  const percent = total === 0 ? 0 : (completed / total) * 100
-
-  progress.style.width = `${percent}%`
+    if (statTotal) statTotal.textContent = total
+    if (statActive) statActive.textContent = total - completed
+    if (statDone) statDone.textContent = completed
 }
 
 function getFilteredTodos() {
-    if(currentFilter === "active") {
+    if (currentFilter === "active") {
         return todos.filter(todo => !todo.completed)
     }
 
-    if(currentFilter === "completed") {
+    if (currentFilter === "completed") {
         return todos.filter(todo => todo.completed)
     }
 
     return todos
 }
 
-function renderTodos () {
+function renderTodos() {
     todoList.innerHTML = ""
 
     const filteredTodos = getFilteredTodos()
+
+    filteredTodos.length === 0
+        ? emptyState.style.display = "flex"
+        : emptyState.style.display = "none"
 
     filteredTodos.forEach(todo => {
         const li = document.createElement("li")
@@ -52,11 +72,10 @@ function renderTodos () {
             <input type="checkbox" class="toggle" ${todo?.completed ? "checked" : ""}>
             <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
             <div class="action">
-                <button class="edit-btn">
+                <button class="edit-btn" title="Edit task">
                     <i class="fa-solid fa-pen"></i>
                 </button>
-
-                <button class="delete-btn">
+                <button class="delete-btn" title="Delete task">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
@@ -64,6 +83,7 @@ function renderTodos () {
 
         todoList.appendChild(li)
     })
+
     updateStats()
 }
 
@@ -72,8 +92,8 @@ todoForm.addEventListener("submit", (e) => {
 
     const text = todoInput.value.trim()
 
-    if(!text) return
-    
+    if (!text) return
+
     const newTodo = {
         id: Date.now(),
         text,
@@ -84,7 +104,7 @@ todoForm.addEventListener("submit", (e) => {
     saveTodo()
     renderTodos()
 
-    todoInput.value=""
+    todoInput.value = ""
 })
 
 todoList.addEventListener("change", e => {
@@ -101,51 +121,40 @@ todoList.addEventListener("change", e => {
 })
 
 filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"))
 
-  button.addEventListener("click", () => {
+        button.classList.add("active")
 
-    filterButtons.forEach(btn => btn.classList.remove("active"))
+        currentFilter = button.dataset.filter
 
-    button.classList.add("active")
-
-    currentFilter = button.dataset.filter
-
-    renderTodos()
-
-  })
-
+        renderTodos()
+    })
 })
 
-
 todoList.addEventListener("click", e => {
+    const li = e.target.closest("li")
+    if (!li) return
 
-  const li = e.target.closest("li")
-  if (!li) return
+    const id = Number(li.dataset.id)
+    const todo = todos.find(t => t.id === id)
 
-  const id = Number(li.dataset.id)
-  const todo = todos.find(t => t.id === id)
-
-
-
-  if (e.target.closest(".delete-btn")) {
-    todos = todos.filter(t => t.id !== id)
-  }
-  
-  if(!todo) return
-
-  if (e.target.closest(".edit-btn")) {
-
-    const newText = prompt("Edit task", todo.text)
-
-    if (newText) {
-      todo.text = newText.trim()
+    if (e.target.closest(".delete-btn")) {
+        todos = todos.filter(t => t.id !== id)
     }
 
-  }
+    if (!todo) return
 
-  saveTodo()
-  renderTodos()
+    if (e.target.closest(".edit-btn")) {
+        const newText = prompt("Edit task", todo.text)
 
+        if (newText) {
+            todo.text = newText.trim()
+        }
+    }
+
+    saveTodo()
+    renderTodos()
 })
 
 renderTodos()

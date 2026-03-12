@@ -4,55 +4,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>TO-DO LIST APP</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
     <script src="./index.js" defer></script>
 </head>
 
 <body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
     <div class="container">
         <div class="todo-app">
-            <h1>To-Do App</h1>
-            <div class="stats-container">
-                <div class="details">
-                    <h3>Keep it up</h3>
-                    <div id="progress-bar">
-                        <div id="progress"></div>
+
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="logo-mark">
+                        <i class="fa-solid fa-check-double"></i>
+                    </div>
+                    <div>
+                        <h1>My Tasks</h1>
+                        <p class="subtitle">Stay focused, stay productive</p>
                     </div>
                 </div>
-                <div class="stats-number">
-                    <p id="stats"></p>
+                <div class="header-date">
+                    <span id="current-date"></span>
+                </div>
+            </header>
+
+            <div class="stats-container">
+                <div class="stat-card stat-all">
+                    <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-total">0</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-active">
+                    <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-active">0</span>
+                        <span class="stat-label">Active</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-done">
+                    <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-done">0</span>
+                        <span class="stat-label">Done</span>
+                    </div>
                 </div>
             </div>
+
+            <div class="details">
+                <div class="progress-header">
+                    <h3>Progress</h3>
+                    <p id="stats"></p>
+                </div>
+                <div id="progress-bar">
+                    <div id="progress"></div>
+                </div>
+            </div>
+
             <form id="todo-form" class="input-area">
-                <input id="todo-input" type="text" placeholder="Add a new task....">
-                <button type="submit" id="add-task-btn"><i class="fa-solid fa-plus"></i></button>
+                <input id="todo-input" type="text" placeholder="Add a new task..." autocomplete="off">
+                <button type="submit" id="add-task-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add</span>
+                </button>
             </form>
 
             <nav class="filters">
-
-                <button data-filter="all" class="filter-btn active">
-                    All
-                </button>
-
-                <button data-filter="active" class="filter-btn">
-                    Active
-                </button>
-
-                <button data-filter="completed" class="filter-btn">
-                    Completed
-                </button>
-
+                <button data-filter="all" class="filter-btn active">All</button>
+                <button data-filter="active" class="filter-btn">Active</button>
+                <button data-filter="completed" class="filter-btn">Completed</button>
             </nav>
 
-
             <ul id="todo-list" class="todo-list"></ul>
+
+            <div class="empty-state" id="empty-state" style="display:none;">
+                <div class="empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+                <p>No tasks here yet</p>
+                <span>Add one above to get started</span>
+            </div>
+
         </div>
     </div>
 </body>
-
 </html>
