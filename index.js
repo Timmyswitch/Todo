@@ -116,4 +116,36 @@ filterButtons.forEach(button => {
 
 })
 
+
+todoList.addEventListener("click", e => {
+
+  const li = e.target.closest("li")
+  if (!li) return
+
+  const id = Number(li.dataset.id)
+  const todo = todos.find(t => t.id === id)
+
+
+
+  if (e.target.closest(".delete-btn")) {
+    todos = todos.filter(t => t.id !== id)
+  }
+  
+  if(!todo) return
+
+  if (e.target.closest(".edit-btn")) {
+
+    const newText = prompt("Edit task", todo.text)
+
+    if (newText) {
+      todo.text = newText.trim()
+    }
+
+  }
+
+  saveTodo()
+  renderTodos()
+
+})
+
 renderTodos()
