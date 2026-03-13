@@ -415,7 +415,7 @@ body {
 
 .edit-btn:hover {
   background: var(--amber-light) !important;
-  color: var(--amber) !important;
+  color: var(--ink) !important;
   border-color: #e8c99a !important;
 }
 
