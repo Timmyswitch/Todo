@@ -69,7 +69,7 @@ function renderTodos() {
         li.dataset.id = todo.id
 
         li.innerHTML = `
-            <input type="checkbox" class="toggle" ${todo?.completed ? "checked" : ""}>
+            <input type="checkbox" class="toggle" ${todo.completed ? "checked" : ""}>
             <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
             <div class="action">
                 <button class="edit-btn" title="Edit task">
@@ -112,12 +112,23 @@ todoList.addEventListener("change", e => {
 
     const li = e.target.closest("li")
     const id = Number(li.dataset.id)
-
     const todo = todos.find(t => t.id === id)
 
-    todo.completed = !todo.completed
+    if (!todo) return
+
+    todo.completed = e.target.checked
+
+    const span = li.querySelector(".todo-text")
+    span.classList.toggle("completed", todo.completed)
+
     saveTodo()
-    renderTodos()
+    updateStats()
+
+    if (currentFilter !== "all") {
+        li.style.opacity = "0"
+        li.style.transform = "translateX(8px)"
+        setTimeout(() => renderTodos(), 220)
+    }
 })
 
 filterButtons.forEach(button => {
@@ -141,6 +152,9 @@ todoList.addEventListener("click", e => {
 
     if (e.target.closest(".delete-btn")) {
         todos = todos.filter(t => t.id !== id)
+        saveTodo()
+        renderTodos()
+        return
     }
 
     if (!todo) return
@@ -151,10 +165,10 @@ todoList.addEventListener("click", e => {
         if (newText) {
             todo.text = newText.trim()
         }
-    }
 
-    saveTodo()
-    renderTodos()
+        saveTodo()
+        renderTodos()
+    }
 })
 
 renderTodos()
